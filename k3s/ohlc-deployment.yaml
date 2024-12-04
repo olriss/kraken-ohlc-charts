@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ohlc-exporter
+  namespace: kraken
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ohlc-exporter
+  template:
+    metadata:
+      labels:
+        app: ohlc-exporter
+    spec:
+      containers:
+      - name: ohlc-exporter
+        image: ohlc-exporter:latest # Local image tag
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ohlc-exporter-service
+  namespace: kraken
+  labels:
+    app: ohlc-exporter
+spec:
+  selector:
+    app: ohlc-exporter  # Deployment'taki `app` label ile eşleşiyor
+  ports:
+  - protocol: TCP
+    port: 8000          # Servis portu (dış dünyaya bu port üzerinden açılır)
+    targetPort: 8000    # Pod içindeki container'ın dinlediği port
+  type: ClusterIP       # Servis tipi (ağ içi erişim için)
