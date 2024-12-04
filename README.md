@@ -18,3 +18,35 @@ This project demonstrates the process of creating a Prometheus exporter to fetch
 - Exposes the data using Prometheus-compatible metrics.
 - Packaged as a **Docker container** for deployment in Kubernetes (K3s).
 - Ingress and service configuration for Grafana dashboards.
+
+---
+
+## Workflow
+
+### 1. Prometheus Exporter
+The exporter is written in Python and uses the following libraries:
+- `prometheus_client` for exposing metrics.
+- `requests` for fetching data from Kraken's Public API.
+
+### Example Prometheus Metrics:
+- `kraken_ohlc_open{pair="BTCUSD"}`
+- `kraken_ohlc_high{pair="BTCUSD"}`
+- `kraken_ohlc_low{pair="BTCUSD"}`
+- `kraken_ohlc_close{pair="BTCUSD"}`
+- `kraken_ohlc_vwap{pair="BTCUSD"}`
+- `kraken_ohlc_volume{pair="BTCUSD"}`
+
+Metrics are updated every 5 minutes, while the data retrieved from Kraken API has an interval of 1 hour.
+
+---
+
+### 2. Dockerization
+The Python application is containerized using Docker. The `Dockerfile` includes the following steps:
+- Base image: Python 3.x
+- Dependencies are installed in a virtual environment.
+- The Prometheus exporter is launched on port `8000`.
+
+#### Example Docker Commands:
+```bash
+docker build -t ohlc-exporter:latest .
+docker save -o ohlc-exporter.tar ohlc-exporter:latest
