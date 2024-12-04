@@ -1,0 +1,7 @@
+scrape_configs:
+  - job_name: ohlc
+    scrape_interval: 5m
+    metrics_path: /metrics
+    static_configs:
+    - targets:
+      - your-hostname-or-k3s-service-name:8000
